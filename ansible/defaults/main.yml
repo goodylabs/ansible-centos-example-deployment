@@ -1,0 +1,13 @@
+---
+    firewall_allowed_tcp_ports:
+    - "22"
+    - "80"
+    - "443"
+
+    passegner_ruby: 'ruby-2.3.0'
+
+    rvm1_rubies:
+      - 'ruby-2.3.0'
+    rvm1_install_path: '/usr/local/lib/rvm'
+    users:
+      - zuscoin

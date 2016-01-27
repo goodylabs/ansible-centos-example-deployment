@@ -1,0 +1,70 @@
+--- 
+  - name: Ensure the 'Development tools' package group is installed
+    yum: name="@Development tools" state=present
+    tags:
+      - base
+
+  - name: Ensure all basic packages are installed
+    yum: name={{item}} state=latest update_cache=yes
+    with_items:
+      - git # Git 
+      - mysql-devel # MySQL libraries for compiling gems for ActiveRecord and access to DB
+    tags:
+      - git
+      - mysql
+      - mc
+
+  # YUM Repositories
+
+  - name: Ensure all repositories are added
+    copy: src=./yum_repos/{{item}} dest=/etc/yum.repos.d/{{item}} owner=root group=root mode=0644
+    with_items:
+      - el-passenger.repo
+      - nginx.repo
+    tags:
+      - nginx
+      - passenger
+      - yum
+
+  # Packages
+
+  - name: Ensure nginx is installed
+    yum: name={{item}} state=present update_cache=yes
+    with_items:
+      - nginx
+    notify:
+      - restart nginx
+    tags:
+      - nginx
+
+  - name: Ensure passenger is installed
+    yum: name=passenger state=present update_cache=yes
+    notify:
+      - restart nginx
+    tags:
+      - nginx
+
+  - name: Ensure mysql-server is installed
+    yum: name={{item}} state=present update_cache=yes
+    with_items:
+      - mysql-server
+    notify:
+      - restart mysql
+    tags:
+      - mysql
+
+  # Users
+
+  - name: Create user with no password and let him write to rvm directories
+    user: name={{item}} shell="/bin/bash" groups="rvm" password=""
+    with_items: users
+    tags:
+      - users 
+
+  - name: Upload SSH keys
+    authorized_key: user={{item}} key="{{ lookup('file', './authorized_keys') }}"
+    with_items: users
+    tags:
+      - users
+
+
