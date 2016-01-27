@@ -5,4 +5,4 @@ www.zuscoin.pl
 base_server_name=zuscoin.pl
 ssl_file_name=zuscoin.pl
 app_env=production
-ssl_status=with_ssl
+system_user=zuscoin

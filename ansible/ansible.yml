@@ -12,6 +12,7 @@
 
   tasks:
     - include: 'tasks/main.yml'
+    - include: 'tasks/nginx.yml'
 
   handlers:
     - name: restart nginx

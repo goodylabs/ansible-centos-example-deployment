@@ -1,0 +1,28 @@
+---
+  - name: Create /etc/nginx/ssl directory
+    file: path=/etc/nginx/ssl state=directory owner=root group=root mode=0644
+    tags:
+      - nginx
+
+  - name: Upload SSL certificate and key if production
+    copy: src=./ssl_certificates/{{item}} dest=/etc/nginx/ssl/{{item}} owner=root group=root mode=0644
+    when: app_env == "production"
+    with_items:
+      - zuscoin.pl.crt
+      - zuscoin.pl.key
+    notify:
+      - restart nginx
+    tags:
+      - nginx
+
+  - name: Configure nginx
+    template: src=./nginx/nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root group=root mode=0644
+    notify:
+      - restart nginx
+    tags:
+      - nginx
+
+  - name: Add server entry for each webapp
+    template: src=./nginx/{{item}}.conf.j2 dest=/etc/nginx/conf.d/{{item}}.conf owner=root group=root mode=0644
+    with_items:
+      - zuscoin.pl

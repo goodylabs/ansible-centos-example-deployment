@@ -1,0 +1,38 @@
+server {
+        listen 443 ssl;
+        server_name www.{{ base_server_name }};
+
+        set $redirect_host_url "https://www.{{ base_server_name }}";
+        include conf.d/_weird_paths.inc;         
+
+        passenger_enabled on;
+        passenger_ruby /usr/local/lib/rvm/wrappers/{{ passegner_ruby }}/ruby;
+        rails_env {{ app_env }};
+        root         /home/{{system_user}}/current/public;
+
+        access_log /var/log/nginx/{{base_server_name}}_ssl_access.log bodylog;
+        error_log /var/log/nginx/{{base_server_name}}_ssl_error.log;
+
+        ssl_certificate /etc/nginx/ssl/www.{{ base_server_name }}.crt;
+        ssl_certificate_key /etc/nginx/ssl/{{ ssl_file_name }}.key;
+        ssl_session_timeout 5m;
+        ssl_protocols TLSv1;
+
+        gzip                    on;
+        gzip_http_version       1.1;
+        gzip_comp_level         9;
+        gzip_min_length         512;
+        gzip_types              application/json,application/html;
+        gzip_proxied            any;
+}
+
+server {
+        listen 80;
+        server_name www.{{ base_server_name }};
+        rewrite ^/ https://www.{{ base_server_name }}/ permanent;
+
+        set $redirect_host_url "https://www.{{ base_server_name }}";
+
+        access_log /var/log/nginx/{{base_server_name}}_access.log bodylog;
+        error_log /var/log/nginx/{{base_server_name}}_error.log;
+}
