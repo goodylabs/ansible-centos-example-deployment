@@ -1,0 +1,8 @@
+[staging]
+www.zuscoin.pl
+
+[production:vars]
+base_server_name=zuscoin.pl
+ssl_file_name=zuscoin.pl
+app_env=staging
+system_user=zuscoin

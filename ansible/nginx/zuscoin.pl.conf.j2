@@ -5,9 +5,9 @@ server {
         set $redirect_host_url "https://www.{{ base_server_name }}";
         include conf.d/_weird_paths.inc;         
 
-#        passenger_enabled on;
-#        passenger_ruby /usr/local/lib/rvm/wrappers/{{ passegner_ruby }}/ruby;
-#        rails_env {{ app_env }};
+        passenger_enabled on;
+        passenger_ruby /usr/local/lib/rvm/wrappers/{{ passegner_ruby }}/ruby;
+        rails_env {{ app_env }};
         root         /home/{{system_user}}/current/public;
 
         access_log /var/log/nginx/{{base_server_name}}_ssl_access.log bodylog;
