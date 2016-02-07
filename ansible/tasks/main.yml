@@ -55,8 +55,8 @@
 
   # Users
 
-  - name: Create user with no password and let him write to rvm directories
-    user: name={{item}} shell="/bin/bash" groups="rvm" password=""
+  - name: Create user with no password and let him write to rvm directories and also generate SSH keys
+    user: name={{item}} shell="/bin/bash" groups="rvm" password="" generate_ssh_key="yes" ssh_key_bits="4096" ssh_key_file=".ssh/id_rsa"
     with_items: users
     tags:
       - users 
