@@ -5,7 +5,7 @@
       - nginx
 
   - name: Upload SSL certificate and key if production
-    copy: src=./ssl_certificates/{{item}} dest=/etc/nginx/ssl/{{item}} owner=root group=root mode=0644
+    copy: src=./ssl_certificates/{{item}} dest=/etc/nginx/ssl/{{item}} owner=root group=root mode=0640
     when: app_env == "production"
     with_items:
       - zuscoin.pl.crt
@@ -22,7 +22,16 @@
     tags:
       - nginx
 
+  - name: Add config files
+    template: src=./nginx/{{item}} dest=/etc/nginx/conf.d/{{item}} owner=root group=root mode=0644
+    with_items:
+      - _weird_paths.inc
+    tags:
+      - nginx
+
   - name: Add server entry for each webapp
     template: src=./nginx/{{item}}.conf.j2 dest=/etc/nginx/conf.d/{{item}}.conf owner=root group=root mode=0644
     with_items:
       - zuscoin.pl
+    tags:
+      - nginx
