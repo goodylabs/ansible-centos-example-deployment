@@ -38,11 +38,16 @@
       - nginx
 
   - name: Ensure passenger is installed
-    yum: name=passenger state=present update_cache=yes
+    yum: name={{item}} state=present update_cache=yes
+    with_items:
+      - passenger
+      - passenger-devel      
+
     notify:
       - restart nginx
     tags:
       - nginx
+      - passenger
 
   - name: Ensure mysql-server is installed
     yum: name={{item}} state=present update_cache=yes
@@ -63,6 +68,12 @@
 
   - name: Upload SSH keys
     authorized_key: user={{item}} key="{{ lookup('file', './authorized_keys') }}"
+    with_items: users
+    tags:
+      - users
+
+  - name: Change users' directory permissions
+    file: path=/home/{{item}} state=directory mode=0755
     with_items: users
     tags:
       - users
